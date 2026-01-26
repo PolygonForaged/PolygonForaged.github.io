@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="Files/PolygonForaged3.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polygon Foraged</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff6b35;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo img {
+            height: 70px;
+            max-width: 100%;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ff6b35;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #ff6b35;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: #f7931e;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.8rem;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .content-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .content-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .content-item img {
+            width: 100%;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .content-item video {
+            width: 100%;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .content-item h3 {
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-item .date {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-listing {
+            background: #f8f9fa;
+            border-left: 4px solid #ff6b35;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .job-listing h3 {
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-listing .location {
+            color: #f7931e;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .logo img {
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <img src="Files/PolygonForaged2.png" alt="Polygon Foraged">
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#work" class="nav-link">Work</a></li>
+                <li><a href="#updates" class="nav-link">Updates</a></li>
+                <li><a href="#jobs" class="nav-link">Jobs</a></li>
+                <li><a href="#policy" class="nav-link">Policy</a></li>
+                <li><a href="#tos" class="nav-link">TOS</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <h1>Welcome to Polygon Foraged</h1>
+                <p>Crafting unique variety social and single player games</p>
+                <button class="btn" onclick="window.location.href='https://discord.com/invite/XkNYrDAn8c'">Join our Discord server</button>
+                <div style="margin-top: 15px;">
+                    <img src="Files/Discord.png" alt="Discord" style="width: 62px; height: 62px; filter: invert(1);">
+                </div>
+            </div>
+            <div id="home-content"></div>
+        </div>
+
+        <!-- Work Page -->
+        <div id="work" class="page">
+            <h1>Our Work</h1>
+            <p>Explore our portfolio of innovative projects and creative solutions.</p>
+            <div id="work-content" class="content-grid"></div>
+        </div>
+
+        <!-- Updates Page -->
+        <div id="updates" class="page">
+            <h1>Latest Updates</h1>
+            <p>Stay informed about our latest news, announcements, and developments.</p>
+            <div id="updates-content" class="content-grid"></div>
+        </div>
+
+        <!-- Jobs Page -->
+        <div id="jobs" class="page">
+            <h1>Career Opportunities</h1>
+            <p>Join our team and help shape the future of digital innovation.</p>
+            <div id="jobs-content"></div>
+        </div>
+
+        <!-- Policy Page -->
+        <div id="policy" class="page">
+            <h1>Privacy Policy</h1>
+            <div id="policy-content"></div>
+        </div>
+
+        <!-- TOS Page -->
+        <div id="tos" class="page">
+            <h1>Terms of Service</h1>
+            <div id="tos-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // CONTENT DATA - EDIT THIS SECTION TO UPDATE YOUR WEBSITE
+        // ========================================
+        const SITE_CONTENT = {
+            home: {
+                sections: []
+            },
+            work: [],
+            updates: [
+                {
+                    id: "1769330786001",
+                    title: "AetherStrike V0.1 alpha test",
+                    description: "Testing out large amounts of objects",
+                    date: "2026-01-25T08:46:25.990Z",
+                    type: "post",
+                    image: "https://media.discordapp.net/attachments/1464889477150539944/1464900171459596465/Screenshot_2026-01-24_035052.png?ex=69772619&is=6975d499&hm=4c653e7e85362ced1b11bf5e0ab4b3447b9edce09281c11d81c20d6628de9680&=&format=webp&quality=lossless&width=1213&height=515"
+                }
+            ],
+            jobs: [
+                {
+                    id: "1769378739718",
+                    title: "Any/Misc application",
+                    location: "Part time | online",
+                    type: "Game development",
+                    description: "Email apply.PolygonForaged@outlook.com and offer any of your skills, also a resume would be preferred."
+                }
+            ],
+            policy: {
+                sections: [
+                    {
+                        title: "Privacy Policy",
+                        text: "This Privacy Policy explains how Polygon Foraged collects, uses, and handles information when you use our games, websites, and related services. By using our services, you agree to this policy."
+                    },
+                    {
+                        title: "1. Information We Collect",
+                        text: "When you use our services, we automatically collect certain technical and activity information. This includes IP addresses, server and application logs, download information, and gameplay or activity data. This data is collected through our servers and services and does not require you to manually submit personal details like your real name or address."
+                    },
+                    {
+                        title: "2. How We Use Your Data",
+                        text: "We use collected data mainly to keep our services running smoothly and fairly. This includes moderating player behavior, enforcing our rules, preventing cheating or abuse, improving performance, fixing bugs, and keeping our systems secure. We do not sell your data or use it for advertising."
+                    },
+                    {
+                        title: "3. Moderation and Logs",
+                        text: "Some of the data we collect is used for moderation and enforcement. This includes activity logs and internal records related to rule violations or investigations. For security and abuse-prevention reasons, users cannot request access to, copies of, or explanations of these logs."
+                    },
+                    {
+                        title: "4. Data Deletion Requests",
+                        text: "You can request deletion of your data at any time. If you do, we will remove or anonymize identifiable information linked to you unless we need to keep certain data for legal reasons, security purposes, or to prevent repeated abuse of our services."
+                    },
+                    {
+                        title: "5. Data Retention",
+                        text: "We only keep data for as long as it is reasonably needed to operate our services, enforce our rules, resolve disputes, or meet legal requirements. Different types of data may be kept for different lengths of time depending on their purpose."
+                    },
+                    {
+                        title: "6. Data Protection",
+                        text: "We take reasonable steps to protect the data we collect, including technical and organizational measures to reduce the risk of unauthorized access or misuse. That said, no online system is perfectly secure, and we cannot guarantee absolute protection."
+                    },
+                    {
+                        title: "7. Children's Privacy",
+                        text: "Our services are intended for users who are at least 13 years old. We do not knowingly collect data from children under 13. If we learn that such data has been collected, it will be deleted."
+                    },
+                    {
+                        title: "8. Changes to This Policy",
+                        text: "We may update this Privacy Policy from time to time as our services change. Any updates will be posted on this page, and continued use of our services means you accept the updated policy."
+                    },
+                    {
+                        title: "9. Contact",
+                        text: "If you have questions about this Privacy Policy or want to request data deletion, you can contact us at contact.PolygonForaged@outlook.com or reach out through our <a href='https://discord.gg/XkNYrDAn8c' target='_blank'>Discord server</a>."
+                    }
+                ]
+            },
+            tos: {
+                sections: [
+                    {
+                        title: "Acceptance of Terms",
+                        text: "By accessing our services, you agree to be bound by these terms of service."
+                    },
+                    {
+                        title: "Polygon Foraged – Terms of Service",
+                        text: "Last Updated: January 2025<br><br>Welcome to Polygon Foraged (\"Company,\" \"we,\" \"us,\" or \"our\"). These Terms of Service (\"Terms\") govern your access to and use of any games, software, applications, websites, services, content, and related products provided by Polygon Foraged (collectively, the \"Services\").<br><br>By accessing or using our Services, you agree to be bound by these Terms. If you do not agree, do not use the Services."
+                    },
+                    {
+                        title: "1. Eligibility",
+                        text: "You must be at least 13 years old to use the Services. By using the Services, you represent and warrant that you meet the minimum age requirement, have the legal capacity to enter into this agreement, and your use of the Services complies with all applicable laws and regulations."
+                    },
+                    {
+                        title: "2. Account Registration",
+                        text: "Some Services may require creating an account. You agree to provide accurate and complete information, keep your login credentials secure, and notify us immediately of unauthorized access. You are responsible for all activity that occurs under your account."
+                    },
+                    {
+                        title: "3. License Grant",
+                        text: "Polygon Foraged grants you a limited, non-exclusive, non-transferable, revocable license to access and use the Services solely for personal, non-commercial entertainment purposes, unless otherwise explicitly permitted."
+                    },
+                    {
+                        title: "4. Ownership & Intellectual Property",
+                        text: "All content, including but not limited to games, characters, artwork, music, code, lore, logos, and trademarks, are owned by Polygon Foraged or its licensors and are protected by intellectual property laws."
+                    },
+                    {
+                        title: "5. User-Generated Content",
+                        text: "If the Services allow you to submit content (\"User Content\"), you grant Polygon Foraged a worldwide, royalty-free, perpetual, irrevocable license to use, reproduce, modify, distribute, and display that content in connection with the Services."
+                    },
+                    {
+                        title: "6. Virtual Items & Currency",
+                        text: "The Services may include virtual goods or currencies (\"Virtual Items\"). Virtual Items have no real-world monetary value, are non-transferable unless explicitly allowed, and Polygon Foraged may modify or remove Virtual Items at any time. Purchases are final unless required otherwise by law."
+                    },
+                    {
+                        title: "7. Acceptable Use Policy",
+                        text: "You agree not to cheat, exploit bugs, or use unauthorized software; harass, threaten, or abuse other users; upload malware or malicious code; impersonate others; or use the Services for illegal activities. Violation may result in suspension or termination."
+                    },
+                    {
+                        title: "8. Disclaimers",
+                        text: "THE SERVICES ARE PROVIDED \"AS IS\" AND \"AS AVAILABLE.\" Polygon Foraged DISCLAIMS ALL WARRANTIES, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT."
+                    },
+                    {
+                        title: "9. Limitation of Liability",
+                        text: "To the maximum extent permitted by law, Polygon Foraged shall not be liable for indirect, incidental, or consequential damages, including loss of data, loss of progress, or loss of profits."
+                    },
+                    {
+                        title: "10. Contact Information",
+                        text: "Polygon Foraged<br>Email Contact: contact.PolygonForaged@outlook.com<br>Or you can join the discord server: <a href='https://discord.gg/XkNYrDAn8c' target='_blank'>Discord.gg/XkNYrDAn8c</a>"
+                    }
+                ]
+            }
+        };
+
+        // ========================================
+        // RENDERING FUNCTIONS - NO NEED TO EDIT BELOW THIS LINE
+        // ========================================
+
+        const CMS = {
+            renderHome(data) {
+                const container = document.getElementById('home-content');
+                if (!data.sections || data.sections.length === 0) return;
+                
+                container.innerHTML = data.sections.map(section => `
+                    <div class="section">
+                        <h2>${section.title}</h2>
+                        <p>${section.text}</p>
+                        ${section.image ? `<img src="${section.image}" alt="${section.title}">` : ''}
+                        ${section.video ? `<video controls src="${section.video}"></video>` : ''}
+                    </div>
+                `).join('');
+            },
+
+            renderWork(data) {
+                const container = document.getElementById('work-content');
+                if (!Array.isArray(data) || data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999;">No projects yet. Check back soon!</p>';
+                    return;
+                }
+                
+                container.innerHTML = data.map(item => `
+                    <div class="content-item">
+                        ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ''}
+                        ${item.video ? `<video controls src="${item.video}"></video>` : ''}
+                        <h3>${item.title}</h3>
+                        <div class="date">${new Date(item.date).toLocaleDateString()}</div>
+                        <p>${item.description}</p>
+                    </div>
+                `).join('');
+            },
+
+            renderUpdates(data) {
+                const container = document.getElementById('updates-content');
+                if (!Array.isArray(data) || data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999;">No updates yet. Check back soon!</p>';
+                    return;
+                }
+                
+                container.innerHTML = data.map(item => `
+                    <div class="content-item">
+                        ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ''}
+                        ${item.video ? `<video controls src="${item.video}"></video>` : ''}
+                        <h3>${item.title}</h3>
+                        <div class="date">${new Date(item.date).toLocaleDateString()}</div>
+                        <p>${item.description}</p>
+                    </div>
+                `).join('');
+            },
+
+            renderJobs(data) {
+                const container = document.getElementById('jobs-content');
+                if (!Array.isArray(data) || data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999;">No job openings at the moment.</p>';
+                    return;
+                }
+                
+                container.innerHTML = data.map(job => `
+                    <div class="job-listing">
+                        <h3>${job.title}</h3>
+                        <div class="location">${job.location} · ${job.type}</div>
+                        <p>${job.description}</p>
+                    </div>
+                `).join('');
+            },
+
+            renderPolicy(data) {
+                const container = document.getElementById('policy-content');
+                if (!data.sections) return;
+                
+                container.innerHTML = data.sections.map(section => `
+                    <div class="section">
+                        <h2>${section.title}</h2>
+                        <p>${section.text}</p>
+                    </div>
+                `).join('');
+            },
+
+            renderTOS(data) {
+                const container = document.getElementById('tos-content');
+                if (!data.sections) return;
+                
+                container.innerHTML = data.sections.map(section => `
+                    <div class="section">
+                        <h2>${section.title}</h2>
+                        <p>${section.text}</p>
+                    </div>
+                `).join('');
+            },
+
+            loadPage(page) {
+                const data = SITE_CONTENT[page];
+                const renderMap = {
+                    home: this.renderHome,
+                    work: this.renderWork,
+                    updates: this.renderUpdates,
+                    jobs: this.renderJobs,
+                    policy: this.renderPolicy,
+                    tos: this.renderTOS
+                };
+                
+                if (renderMap[page] && data) {
+                    renderMap[page](data);
+                }
+            }
+        };
+
+        // Navigation
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function showPage(pageId) {
+            pages.forEach(p => p.classList.remove('active'));
+            navLinks.forEach(l => l.classList.remove('active'));
+            
+            const targetPage = document.getElementById(pageId);
+            const targetLink = document.querySelector(`a[href="#${pageId}"]`);
+            
+            if (targetPage) targetPage.classList.add('active');
+            if (targetLink) targetLink.classList.add('active');
+            
+            CMS.loadPage(pageId);
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('href').substring(1);
+                showPage(pageId);
+                history.pushState({ page: pageId }, '', `#${pageId}`);
+            });
+        });
+
+        window.addEventListener('popstate', (e) => {
+            const pageId = e.state?.page || 'home';
+            showPage(pageId);
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1) || 'home';
+            showPage(hash);
+        });
+    </script>
+</body>
+</html>
